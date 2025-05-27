@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Degen Dice - Memecoin Casino</title>
     <style>
-        /* Tailwind-like CSS */
         :root {
             --bg-from: #581c87;
             --bg-to: #000000;
@@ -153,32 +152,31 @@
                 <span class="slot-reel" id="reel2">🐶</span>
                 <span class="slot-reel" id="reel3">🐸</span>
             </div>
-            <button class="action-btn" id="spin-btn" onclick="spinSlots()">SPIN (0.01 ETH)</button>
+            <button class="action-btn" id="spin-btn" onclick="spinSlots()">SPIN (0.01 SOL)</button>
             <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
             <p id="slotsResult"></p>
         </div>
 
-        <!-- Roulette Game (Placeholder) -->
+        <!-- Roulette Game -->
         <div id="roulette" class="game-screen">
             <h2>Rug Pull Roulette</h2>
             <div style="font-size: 5rem; margin: 20px 0;">🔫</div>
-            <button class="action-btn" onclick="playRoulette()">PULL TRIGGER (0.05 ETH)</button>
+            <button class="action-btn" onclick="playRoulette()">PULL TRIGGER (0.05 SOL)</button>
             <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
             <p id="rouletteResult"></p>
         </div>
 
-        <!-- Lottery Game (Placeholder) -->
+        <!-- Lottery Game -->
         <div id="lottery" class="game-screen">
             <h2>Ape Lottery</h2>
             <div style="font-size: 5rem; margin: 20px 0;">🎟️</div>
-            <button class="action-btn" onclick="buyTicket()">BUY TICKET (0.1 ETH)</button>
+            <button class="action-btn" onclick="buyTicket()">BUY TICKET (0.1 SOL)</button>
             <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
             <p id="lotteryResult"></p>
         </div>
     </div>
 
     <script>
-        // Simple wallet connection simulation
         document.getElementById('connectWallet').addEventListener('click', function() {
             const walletAddress = '0x' + Math.random().toString(16).substr(2, 40);
             document.getElementById('walletAddress').textContent = walletAddress;
@@ -186,22 +184,18 @@
             this.style.background = 'green';
         });
 
-        // Game navigation
         function showGame(gameId) {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById(gameId).style.display = 'block';
         }
 
         function showMainMenu() {
-            // Hide all game screens
             document.querySelectorAll('.game-screen').forEach(el => {
                 el.style.display = 'none';
             });
-            // Show main menu
             document.getElementById('mainMenu').style.display = 'block';
         }
 
-        // Slot machine logic
         const symbols = ['🐶', '🐸', '🍌', '💩', '🚀', '👑'];
         function spinSlots() {
             const spinBtn = document.getElementById('spin-btn');
@@ -226,7 +220,7 @@
                     clearInterval(spinInterval);
                     checkSlotResult(reels);
                     spinBtn.disabled = false;
-                    spinBtn.textContent = 'SPIN (0.01 ETH)';
+                    spinBtn.textContent = 'SPIN (0.01 SOL)';
                 }
             }, 100);
         }
@@ -236,10 +230,10 @@
             const values = reels.map(reel => reel.textContent);
             
             if (values[0] === values[1] && values[1] === values[2]) {
-                resultText.textContent = 'JACKPOT! YOU WON 0.1 ETH!';
+                resultText.textContent = 'JACKPOT! YOU WON 0.1 SOL!';
                 resultText.style.color = 'lime';
             } else if (values[0] === values[1] || values[1] === values[2]) {
-                resultText.textContent = 'Small win! You got 0.02 ETH back';
+                resultText.textContent = 'Small win! You got 0.02 SOL back';
                 resultText.style.color = 'yellow';
             } else {
                 resultText.textContent = 'You lost! Try again degen!';
@@ -247,28 +241,26 @@
             }
         }
 
-        // Roulette game logic
         function playRoulette() {
-            const result = Math.floor(Math.random() * 6) + 1; // 1-6
+            const result = Math.floor(Math.random() * 6) + 1;
             const resultText = document.getElementById('rouletteResult');
             
             if (result === 1) {
-                resultText.textContent = '💥 YOU GOT RUGGED! 💥\nAll your ETH is gone!';
+                resultText.textContent = '💥 YOU GOT RUGGED! 💥\nAll your SOL is gone!';
                 resultText.style.color = 'red';
             } else {
-                resultText.textContent = 'Safe... this time.\nYou won 0.01 ETH!';
+                resultText.textContent = 'Safe... this time.\nYou won 0.01 SOL!';
                 resultText.style.color = 'lime';
             }
         }
 
-        // Lottery game logic
         function buyTicket() {
             const resultText = document.getElementById('lotteryResult');
-            const win = Math.random() < 0.1; // 10% chance
+            const win = Math.random() < 0.1;
             
             if (win) {
                 const prize = (Math.random() * 1).toFixed(2);
-                resultText.textContent = `🎉 YOU WON ${prize} ETH! 🎉`;
+                resultText.textContent = `🎉 YOU WON ${prize} SOL! 🎉`;
                 resultText.style.color = 'lime';
             } else {
                 resultText.textContent = 'Better luck next time ape!\n(You lost)';
