@@ -65,7 +65,7 @@
             cursor: pointer;
             margin: 10px 0;
         }
-        .slot-machine {
+        .game-screen {
             display: none;
             text-align: center;
             margin-top: 30px;
@@ -81,7 +81,7 @@
             color: black;
             border-radius: 10px;
         }
-        #spin-btn {
+        .action-btn {
             background: red;
             color: white;
             font-size: 1.5rem;
@@ -100,6 +100,9 @@
             margin-top: 20px;
             cursor: pointer;
         }
+        #mainMenu {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +114,8 @@
             <p id="walletAddress" style="word-break: break-all;"></p>
         </header>
 
-        <main id="mainContent">
+        <!-- Main Menu -->
+        <div id="mainMenu">
             <div class="text-center">
                 <h2>Choose Your Degeneracy</h2>
                 
@@ -139,22 +143,38 @@
                     Only gamble what you can afford to lose (which should be nothing because you're a degen).</p>
                 </div>
             </div>
-        </main>
+        </div>
 
-        <!-- Slot Machine Game (hidden by default) -->
-        <div id="slotsGame" class="slot-machine">
+        <!-- Slot Machine Game -->
+        <div id="slots" class="game-screen">
             <h2>Memecoin Slots</h2>
             <div>
                 <span class="slot-reel" id="reel1">🍌</span>
                 <span class="slot-reel" id="reel2">🐶</span>
                 <span class="slot-reel" id="reel3">🐸</span>
             </div>
-            <button id="spin-btn" onclick="spinSlots()">SPIN (0.01 ETH)</button>
-            <button class="back-btn" onclick="hideGame()">BACK TO LOBBY</button>
+            <button class="action-btn" id="spin-btn" onclick="spinSlots()">SPIN (0.01 ETH)</button>
+            <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
             <p id="slotsResult"></p>
         </div>
 
-        <!-- Other games would go here with similar structure -->
+        <!-- Roulette Game (Placeholder) -->
+        <div id="roulette" class="game-screen">
+            <h2>Rug Pull Roulette</h2>
+            <div style="font-size: 5rem; margin: 20px 0;">🔫</div>
+            <button class="action-btn" onclick="playRoulette()">PULL TRIGGER (0.05 ETH)</button>
+            <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
+            <p id="rouletteResult"></p>
+        </div>
+
+        <!-- Lottery Game (Placeholder) -->
+        <div id="lottery" class="game-screen">
+            <h2>Ape Lottery</h2>
+            <div style="font-size: 5rem; margin: 20px 0;">🎟️</div>
+            <button class="action-btn" onclick="buyTicket()">BUY TICKET (0.1 ETH)</button>
+            <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
+            <p id="lotteryResult"></p>
+        </div>
     </div>
 
     <script>
@@ -167,18 +187,18 @@
         });
 
         // Game navigation
-        function showGame(game) {
-            document.getElementById('mainContent').style.display = 'none';
-            if (game === 'slots') {
-                document.getElementById('slotsGame').style.display = 'block';
-            }
-            // Would add others here
+        function showGame(gameId) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById(gameId).style.display = 'block';
         }
 
-        function hideGame() {
-            document.getElementById('slotsGame').style.display = 'none';
-            // Hide other games here
-            document.getElementById('mainContent').style.display = 'block';
+        function showMainMenu() {
+            // Hide all game screens
+            document.querySelectorAll('.game-screen').forEach(el => {
+                el.style.display = 'none';
+            });
+            // Show main menu
+            document.getElementById('mainMenu').style.display = 'block';
         }
 
         // Slot machine logic
@@ -204,14 +224,14 @@
                 spins++;
                 if (spins >= totalSpins) {
                     clearInterval(spinInterval);
-                    checkResult(reels);
+                    checkSlotResult(reels);
                     spinBtn.disabled = false;
                     spinBtn.textContent = 'SPIN (0.01 ETH)';
                 }
             }, 100);
         }
         
-        function checkResult(reels) {
+        function checkSlotResult(reels) {
             const resultText = document.getElementById('slotsResult');
             const values = reels.map(reel => reel.textContent);
             
@@ -223,6 +243,35 @@
                 resultText.style.color = 'yellow';
             } else {
                 resultText.textContent = 'You lost! Try again degen!';
+                resultText.style.color = 'red';
+            }
+        }
+
+        // Roulette game logic
+        function playRoulette() {
+            const result = Math.floor(Math.random() * 6) + 1; // 1-6
+            const resultText = document.getElementById('rouletteResult');
+            
+            if (result === 1) {
+                resultText.textContent = '💥 YOU GOT RUGGED! 💥\nAll your ETH is gone!';
+                resultText.style.color = 'red';
+            } else {
+                resultText.textContent = 'Safe... this time.\nYou won 0.01 ETH!';
+                resultText.style.color = 'lime';
+            }
+        }
+
+        // Lottery game logic
+        function buyTicket() {
+            const resultText = document.getElementById('lotteryResult');
+            const win = Math.random() < 0.1; // 10% chance
+            
+            if (win) {
+                const prize = (Math.random() * 1).toFixed(2);
+                resultText.textContent = `🎉 YOU WON ${prize} ETH! 🎉`;
+                resultText.style.color = 'lime';
+            } else {
+                resultText.textContent = 'Better luck next time ape!\n(You lost)';
                 resultText.style.color = 'red';
             }
         }
