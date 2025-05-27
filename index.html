@@ -1,250 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Moon or Goon - Pump or Dump Casino</title>
-<style>
-  :root {
-    --bg-from: #0f2027;
-    --bg-to: #203a43;
-    --accent-light: #61dafb;
-    --accent-dark: #0288d1;
-    --text-color: #e0f7fa;
-    --win-color: #4caf50;
-    --lose-color: #f44336;
-  }
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    align-items: center;
-    padding: 20px;
-  }
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 0.2em;
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 10px var(--accent-light);
-  }
-  h2 {
-    margin-top: 0;
-    margin-bottom: 0.5em;
-  }
-  #walletAddress {
-    margin-top: 10px;
-    font-family: monospace;
-    word-break: break-all;
-    color: var(--accent-light);
-  }
-  button {
-    cursor: pointer;
-    border: none;
-    border-radius: 30px;
-    padding: 15px 30px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: var(--bg-from);
-    background: var(--accent-light);
-    box-shadow: 0 0 8px var(--accent-light);
-    transition: background 0.3s ease;
-    margin: 10px 5px;
-  }
-  button:hover:not(:disabled) {
-    background: var(--accent-dark);
-    box-shadow: 0 0 12px var(--accent-dark);
-  }
-  button:disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
-  #gameArea {
-    margin-top: 30px;
-    width: 100%;
-    max-width: 600px;
-    background: rgba(20, 40, 60, 0.85);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 0 25px rgba(97, 218, 251, 0.6);
-    text-align: center;
-  }
-  #chart {
-    margin: 20px auto;
-    width: 100%;
-    height: 150px;
-    background: #021e3c;
-    border-radius: 12px;
-    position: relative;
-    overflow: hidden;
-  }
-  .bar {
-    position: absolute;
-    bottom: 0;
-    width: 4%;
-    background: var(--accent-light);
-    border-radius: 4px 4px 0 0;
-    transition: height 0.5s ease, background 0.3s ease;
-  }
-  #resultText {
-    font-size: 1.4rem;
-    margin-top: 15px;
-    min-height: 2em;
-  }
-  a.buy-link {
-    display: inline-block;
-    margin-top: 25px;
-    padding: 15px 35px;
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: var(--bg-from);
-    background: var(--accent-light);
-    border-radius: 40px;
-    text-decoration: none;
-    box-shadow: 0 0 15px var(--accent-light);
-    transition: background 0.3s ease;
-  }
-  a.buy-link:hover {
-    background: var(--accent-dark);
-    box-shadow: 0 0 20px var(--accent-dark);
-  }
-  #disclaimer {
-    margin-top: 40px;
-    font-size: 0.9rem;
-    color: #aaa;
-    max-width: 600px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moon or Goon - Pump.fun Memecoin Casino</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #581c87, #000);
+      color: #facc15;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      margin: 0; padding: 20px;
+      text-align: center;
+    }
+    button, select {
+      font-size: 1.2rem;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+    button {
+      background-color: #a16207;
+      color: black;
+      font-weight: bold;
+    }
+    #connectWalletBtn.connected {
+      background-color: green;
+      color: white;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .balance {
+      margin-top: 15px;
+      font-size: 1.2rem;
+    }
+    label {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
+  <h1>Moon or Goon</h1>
+  <p>Pick your token and bet on the moon or goon!</p>
 
-<h1>🌙 MOON or GOON 🚀</h1>
-<p>The ultimate Pump or Dump casino game for memecoin degenerates</p>
+  <button id="connectWalletBtn">Connect Phantom Wallet</button>
 
-<button id="connectWallet">Connect Solana Wallet</button>
-<p id="walletAddress"></p>
+  <div id="walletInfo" style="display:none;">
+    <label for="tokenSelect">Choose your token:</label>
+    <select id="tokenSelect"></select>
 
-<div id="gameArea" style="display:none;">
-  <h2>Place Your Bet: 0.05 SOL</h2>
-  <button id="pumpBtn">PUMP 🚀</button>
-  <button id="dumpBtn">DUMP 💀</button>
-  
-  <div id="chart"></div>
-  <div id="resultText"></div>
-  
-  <a class="buy-link" href="https://pump.fun/token/moon-goon" target="_blank" rel="noopener noreferrer">Buy $MOONGOON on Pump.fun</a>
-</div>
+    <div class="balance" id="tokenBalance">Balance: 0</div>
 
-<p id="disclaimer">
-  ⚠️ This is a fun meme game with no real money involved. Play responsibly. You can lose your SOL (simulated here) just like real crypto!  
-</p>
+    <button id="betMoonBtn">Bet MOON (1 token)</button>
+    <button id="betGoonBtn">Bet GOON (1 token)</button>
 
-<script>
-  // Wallet connect simulation
-  const connectBtn = document.getElementById('connectWallet');
-  const walletAddressElem = document.getElementById('walletAddress');
-  const gameArea = document.getElementById('gameArea');
-  
-  let walletAddress = null;
-  
-  connectBtn.addEventListener('click', () => {
-    if (!walletAddress) {
-      walletAddress = 'So1aNA' + Math.random().toString(36).substr(2, 30).toUpperCase();
-      walletAddressElem.textContent = walletAddress;
-      connectBtn.textContent = 'Wallet Connected';
-      connectBtn.disabled = true;
-      gameArea.style.display = 'block';
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Tokens to track (example addresses on Solana)
+    // You can add Pump.fun token mint addresses here
+    const tokens = [
+      { symbol: "SOL", mint: null, decimals: 9 }, // native SOL
+      { symbol: "USDC", mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", decimals: 6 },
+      { symbol: "MOONGOON", mint: "FictitiousMintAddress1234567890123456789012345", decimals: 9 },
+      // Add more real tokens as needed
+    ];
+
+    const connectWalletBtn = document.getElementById('connectWalletBtn');
+    const walletInfo = document.getElementById('walletInfo');
+    const tokenSelect = document.getElementById('tokenSelect');
+    const tokenBalanceElem = document.getElementById('tokenBalance');
+    const resultElem = document.getElementById('result');
+    const betMoonBtn = document.getElementById('betMoonBtn');
+    const betGoonBtn = document.getElementById('betGoonBtn');
+
+    let walletPublicKey = null;
+    let selectedToken = tokens[0];
+
+    // Check if Phantom wallet is installed
+    function isPhantomInstalled() {
+      return window.solana && window.solana.isPhantom;
     }
-  });
 
-  // Game logic
-  const pumpBtn = document.getElementById('pumpBtn');
-  const dumpBtn = document.getElementById('dumpBtn');
-  const chart = document.getElementById('chart');
-  const resultText = document.getElementById('resultText');
-  
-  const chartBarsCount = 20;
-  const maxHeight = 130; // max px height for bars
-  let intervalId = null;
-  
-  function createChart() {
-    chart.innerHTML = '';
-    for(let i = 0; i < chartBarsCount; i++) {
-      const bar = document.createElement('div');
-      bar.classList.add('bar');
-      bar.style.left = (i * 5 + 2) + '%';
-      bar.style.height = '20px';
-      chart.appendChild(bar);
-    }
-  }
-  
-  function animateChart(pump) {
-    let step = 0;
-    const bars = chart.querySelectorAll('.bar');
-    
-    // Generate random heights trending up or down based on pump or dump
-    const heights = [];
-    for(let i = 0; i < chartBarsCount; i++) {
-      // Pump means mostly uptrend, Dump mostly downtrend with randomness
-      let base = pump ? 20 + i * 5 : maxHeight - i * 5;
-      heights.push(base + Math.floor(Math.random() * 15 - 7));
-    }
-    
-    intervalId = setInterval(() => {
-      if (step >= chartBarsCount) {
-        clearInterval(intervalId);
-        showResult(pump);
-        enableButtons(true);
+    // Connect to Phantom wallet
+    async function connectWallet() {
+      if (!isPhantomInstalled()) {
+        alert("Phantom Wallet not found. Please install it from https://phantom.app/");
         return;
       }
-      bars[step].style.height = heights[step] + 'px';
-      bars[step].style.background = pump ? 'lime' : 'crimson';
-      step++;
-    }, 120);
-  }
-  
-  function showResult(pump) {
-    // 50% chance win/lose but pump side has slight edge
-    const winChance = pump ? 0.6 : 0.4;
-    const win = Math.random() < winChance;
-    if (win) {
-      resultText.textContent = pump
-        ? '🚀 PUMPED! You moonwalked to profits! +0.1 SOL'
-        : '💀 DUMPED! You cut losses smartly! +0.05 SOL';
-      resultText.style.color = 'lime';
-    } else {
-      resultText.textContent = pump
-        ? '💀 Dump incoming! You got gooned! -0.05 SOL'
-        : '🚀 Pumped too soon! You lost! -0.05 SOL';
-      resultText.style.color = 'crimson';
+      try {
+        const resp = await window.solana.connect();
+        walletPublicKey = resp.publicKey.toString();
+        connectWalletBtn.textContent = `Connected: ${walletPublicKey.slice(0, 6)}...${walletPublicKey.slice(-4)}`;
+        connectWalletBtn.classList.add('connected');
+        walletInfo.style.display = "block";
+        await populateTokenDropdown();
+        await updateBalance();
+      } catch (err) {
+        console.error(err);
+      }
     }
-  }
-  
-  function enableButtons(enable) {
-    pumpBtn.disabled = !enable;
-    dumpBtn.disabled = !enable;
-  }
-  
-  pumpBtn.addEventListener('click', () => {
-    enableButtons(false);
-    resultText.textContent = '';
-    createChart();
-    animateChart(true);
-  });
-  
-  dumpBtn.addEventListener('click', () => {
-    enableButtons(false);
-    resultText.textContent = '';
-    createChart();
-    animateChart(false);
-  });
 
-  // Initialize empty chart
-  createChart();
-</script>
+    connectWalletBtn.addEventListener('click', connectWallet);
 
+    // Populate dropdown with tokens
+    function populateTokenDropdown() {
+      tokenSelect.innerHTML = '';
+      tokens.forEach(token => {
+        const option = document.createElement('option');
+        option.value = token.mint || 'SOL'; // native SOL has null mint
+        option.textContent = token.symbol;
+        option.dataset.decimals = token.decimals;
+        tokenSelect.appendChild(option);
+      });
+      selectedToken = tokens[0];
+    }
+
+    tokenSelect.addEventListener('change', async () => {
+      const mint = tokenSelect.value;
+      selectedToken = tokens.find(t => (t.mint || 'SOL') === mint);
+      await updateBalance();
+      resultElem.textContent = '';
+    });
+
+    // Update token balance
+    async function updateBalance() {
+      if (!walletPublicKey) return;
+
+      if (selectedToken.mint === null) {
+        // Native SOL balance
+        const balanceLamports = await window.solana.getBalance();
+        const solBalance = balanceLamports / 1e9;
+        tokenBalanceElem.textContent = `Balance: ${solBalance.toFixed(4)} ${selectedToken.symbol}`;
+      } else {
+        // For SPL tokens, use RPC call to get token account balance
+        // This is a simplified example using fetch to Solana RPC
+        const connectionUrl = "https://api.mainnet-beta.solana.com";
+        const rpcRequest = {
+          "jsonrpc":"2.0",
+          "id":1,
+          "method":"getTokenAccountsByOwner",
+          "params":[
+            walletPublicKey,
+            {"mint": selectedToken.mint},
+            {"encoding": "jsonParsed"}
+          ]
+        };
+
+        try {
+          const response = await fetch(connectionUrl, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(rpcRequest)
+          });
+          const data = await response.json();
+          const accounts = data.result.value;
+          let balance = 0;
+          if (accounts.length > 0) {
+            balance = accounts.reduce((acc, acct) => {
+              return acc + parseInt(acct.account.data.parsed.info.tokenAmount.amount);
+            }, 0);
+            balance = balance / (10 ** selectedToken.decimals);
+          }
+          tokenBalanceElem.textContent = `Balance: ${balance.toFixed(4)} ${selectedToken.symbol}`;
+        } catch(e) {
+          console.error(e);
+          tokenBalanceElem.textContent = `Balance: 0 ${selectedToken.symbol}`;
+        }
+      }
+    }
+
+    // Simulate placing a bet
+    function placeBet(choice) {
+      resultElem.style.color = '#facc15';
+      resultElem.textContent = 'Spinning...';
+
+      setTimeout(() => {
+        // 50/50 win or lose
+        const win = Math.random() < 0.5;
+        if (win) {
+          resultElem.style.color = 'lime';
+          resultElem.textContent = `You chose ${choice} and WON 2 ${selectedToken.symbol}!`;
+        } else {
+          resultElem.style.color = 'red';
+          resultElem.textContent = `You chose ${choice} and LOST 1 ${selectedToken.symbol}! Better luck next time.`;
+        }
+      }, 1500);
+    }
+
+    betMoonBtn.addEventListener('click', () => placeBet('MOON'));
+    betGoonBtn.addEventListener('click', () => placeBet('GOON'));
+  </script>
 </body>
 </html>
