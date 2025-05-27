@@ -1,272 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Degen Dice - Memecoin Casino</title>
-    <style>
-        :root {
-            --bg-from: #581c87;
-            --bg-to: #000000;
-            --text-color: #facc15;
-            --accent: #a16207;
-        }
-        body {
-            min-height: 100vh;
-            background: linear-gradient(to bottom, var(--bg-from), var(--bg-to));
-            color: var(--text-color);
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            text-align: center;
-            padding: 30px 0;
-            border-bottom: 3px dashed var(--text-color);
-        }
-        .game-card {
-            background: rgba(161, 98, 7, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid var(--text-color);
-        }
-        .game-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px var(--text-color);
-        }
-        .game-emoji {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-        .disclaimer {
-            background: rgba(161, 98, 7, 0.3);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 40px;
-            border: 1px dashed red;
-        }
-        .wallet-btn {
-            background: var(--text-color);
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        .game-screen {
-            display: none;
-            text-align: center;
-            margin-top: 30px;
-        }
-        .slot-reel {
-            font-size: 4rem;
-            margin: 0 10px;
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            background: white;
-            color: black;
-            border-radius: 10px;
-        }
-        .action-btn {
-            background: red;
-            color: white;
-            font-size: 1.5rem;
-            padding: 15px 30px;
-            border-radius: 10px;
-            border: none;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        .back-btn {
-            background: gray;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        #mainMenu {
-            display: block;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Moon or Goon - Pump or Dump Casino</title>
+<style>
+  :root {
+    --bg-from: #0f2027;
+    --bg-to: #203a43;
+    --accent-light: #61dafb;
+    --accent-dark: #0288d1;
+    --text-color: #e0f7fa;
+    --win-color: #4caf50;
+    --lose-color: #f44336;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 0.2em;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 10px var(--accent-light);
+  }
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+  }
+  #walletAddress {
+    margin-top: 10px;
+    font-family: monospace;
+    word-break: break-all;
+    color: var(--accent-light);
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--bg-from);
+    background: var(--accent-light);
+    box-shadow: 0 0 8px var(--accent-light);
+    transition: background 0.3s ease;
+    margin: 10px 5px;
+  }
+  button:hover:not(:disabled) {
+    background: var(--accent-dark);
+    box-shadow: 0 0 12px var(--accent-dark);
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  #gameArea {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 600px;
+    background: rgba(20, 40, 60, 0.85);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 25px rgba(97, 218, 251, 0.6);
+    text-align: center;
+  }
+  #chart {
+    margin: 20px auto;
+    width: 100%;
+    height: 150px;
+    background: #021e3c;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bar {
+    position: absolute;
+    bottom: 0;
+    width: 4%;
+    background: var(--accent-light);
+    border-radius: 4px 4px 0 0;
+    transition: height 0.5s ease, background 0.3s ease;
+  }
+  #resultText {
+    font-size: 1.4rem;
+    margin-top: 15px;
+    min-height: 2em;
+  }
+  a.buy-link {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 15px 35px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--bg-from);
+    background: var(--accent-light);
+    border-radius: 40px;
+    text-decoration: none;
+    box-shadow: 0 0 15px var(--accent-light);
+    transition: background 0.3s ease;
+  }
+  a.buy-link:hover {
+    background: var(--accent-dark);
+    box-shadow: 0 0 20px var(--accent-dark);
+  }
+  #disclaimer {
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #aaa;
+    max-width: 600px;
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🤑 DEGEN DICE 🎰</h1>
-            <p>The most regarded memecoin casino in crypto</p>
-            <button class="wallet-btn" id="connectWallet">CONNECT WALLET</button>
-            <p id="walletAddress" style="word-break: break-all;"></p>
-        </header>
 
-        <!-- Main Menu -->
-        <div id="mainMenu">
-            <div class="text-center">
-                <h2>Choose Your Degeneracy</h2>
-                
-                <div class="game-card" onclick="showGame('slots')">
-                    <div class="game-emoji">🎰</div>
-                    <h3>Memecoin Slots</h3>
-                    <p>Spin to win (or lose) your favorite shitcoins</p>
-                </div>
-                
-                <div class="game-card" onclick="showGame('roulette')">
-                    <div class="game-emoji">🔫</div>
-                    <h3>Rug Pull Roulette</h3>
-                    <p>1 in 6 chance to get rugged - just like real crypto!</p>
-                </div>
-                
-                <div class="game-card" onclick="showGame('lottery')">
-                    <div class="game-emoji">🎟️</div>
-                    <h3>Ape Lottery</h3>
-                    <p>Buy tickets with any memecoin for a chance to win big</p>
-                </div>
-                
-                <div class="disclaimer">
-                    <h3>⚠️ DISCLAIMER ⚠️</h3>
-                    <p>This is a meme project with no real value. You will probably lose all your money. 
-                    Only gamble what you can afford to lose (which should be nothing because you're a degen).</p>
-                </div>
-            </div>
-        </div>
+<h1>🌙 MOON or GOON 🚀</h1>
+<p>The ultimate Pump or Dump casino game for memecoin degenerates</p>
 
-        <!-- Slot Machine Game -->
-        <div id="slots" class="game-screen">
-            <h2>Memecoin Slots</h2>
-            <div>
-                <span class="slot-reel" id="reel1">🍌</span>
-                <span class="slot-reel" id="reel2">🐶</span>
-                <span class="slot-reel" id="reel3">🐸</span>
-            </div>
-            <button class="action-btn" id="spin-btn" onclick="spinSlots()">SPIN (0.01 SOL)</button>
-            <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
-            <p id="slotsResult"></p>
-        </div>
+<button id="connectWallet">Connect Solana Wallet</button>
+<p id="walletAddress"></p>
 
-        <!-- Roulette Game -->
-        <div id="roulette" class="game-screen">
-            <h2>Rug Pull Roulette</h2>
-            <div style="font-size: 5rem; margin: 20px 0;">🔫</div>
-            <button class="action-btn" onclick="playRoulette()">PULL TRIGGER (0.05 SOL)</button>
-            <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
-            <p id="rouletteResult"></p>
-        </div>
+<div id="gameArea" style="display:none;">
+  <h2>Place Your Bet: 0.05 SOL</h2>
+  <button id="pumpBtn">PUMP 🚀</button>
+  <button id="dumpBtn">DUMP 💀</button>
+  
+  <div id="chart"></div>
+  <div id="resultText"></div>
+  
+  <a class="buy-link" href="https://pump.fun/token/moon-goon" target="_blank" rel="noopener noreferrer">Buy $MOONGOON on Pump.fun</a>
+</div>
 
-        <!-- Lottery Game -->
-        <div id="lottery" class="game-screen">
-            <h2>Ape Lottery</h2>
-            <div style="font-size: 5rem; margin: 20px 0;">🎟️</div>
-            <button class="action-btn" onclick="buyTicket()">BUY TICKET (0.1 SOL)</button>
-            <button class="back-btn" onclick="showMainMenu()">BACK TO LOBBY</button>
-            <p id="lotteryResult"></p>
-        </div>
-    </div>
+<p id="disclaimer">
+  ⚠️ This is a fun meme game with no real money involved. Play responsibly. You can lose your SOL (simulated here) just like real crypto!  
+</p>
 
-    <script>
-        document.getElementById('connectWallet').addEventListener('click', function() {
-            const walletAddress = '0x' + Math.random().toString(16).substr(2, 40);
-            document.getElementById('walletAddress').textContent = walletAddress;
-            this.textContent = 'CONNECTED';
-            this.style.background = 'green';
-        });
+<script>
+  // Wallet connect simulation
+  const connectBtn = document.getElementById('connectWallet');
+  const walletAddressElem = document.getElementById('walletAddress');
+  const gameArea = document.getElementById('gameArea');
+  
+  let walletAddress = null;
+  
+  connectBtn.addEventListener('click', () => {
+    if (!walletAddress) {
+      walletAddress = 'So1aNA' + Math.random().toString(36).substr(2, 30).toUpperCase();
+      walletAddressElem.textContent = walletAddress;
+      connectBtn.textContent = 'Wallet Connected';
+      connectBtn.disabled = true;
+      gameArea.style.display = 'block';
+    }
+  });
 
-        function showGame(gameId) {
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById(gameId).style.display = 'block';
-        }
+  // Game logic
+  const pumpBtn = document.getElementById('pumpBtn');
+  const dumpBtn = document.getElementById('dumpBtn');
+  const chart = document.getElementById('chart');
+  const resultText = document.getElementById('resultText');
+  
+  const chartBarsCount = 20;
+  const maxHeight = 130; // max px height for bars
+  let intervalId = null;
+  
+  function createChart() {
+    chart.innerHTML = '';
+    for(let i = 0; i < chartBarsCount; i++) {
+      const bar = document.createElement('div');
+      bar.classList.add('bar');
+      bar.style.left = (i * 5 + 2) + '%';
+      bar.style.height = '20px';
+      chart.appendChild(bar);
+    }
+  }
+  
+  function animateChart(pump) {
+    let step = 0;
+    const bars = chart.querySelectorAll('.bar');
+    
+    // Generate random heights trending up or down based on pump or dump
+    const heights = [];
+    for(let i = 0; i < chartBarsCount; i++) {
+      // Pump means mostly uptrend, Dump mostly downtrend with randomness
+      let base = pump ? 20 + i * 5 : maxHeight - i * 5;
+      heights.push(base + Math.floor(Math.random() * 15 - 7));
+    }
+    
+    intervalId = setInterval(() => {
+      if (step >= chartBarsCount) {
+        clearInterval(intervalId);
+        showResult(pump);
+        enableButtons(true);
+        return;
+      }
+      bars[step].style.height = heights[step] + 'px';
+      bars[step].style.background = pump ? 'lime' : 'crimson';
+      step++;
+    }, 120);
+  }
+  
+  function showResult(pump) {
+    // 50% chance win/lose but pump side has slight edge
+    const winChance = pump ? 0.6 : 0.4;
+    const win = Math.random() < winChance;
+    if (win) {
+      resultText.textContent = pump
+        ? '🚀 PUMPED! You moonwalked to profits! +0.1 SOL'
+        : '💀 DUMPED! You cut losses smartly! +0.05 SOL';
+      resultText.style.color = 'lime';
+    } else {
+      resultText.textContent = pump
+        ? '💀 Dump incoming! You got gooned! -0.05 SOL'
+        : '🚀 Pumped too soon! You lost! -0.05 SOL';
+      resultText.style.color = 'crimson';
+    }
+  }
+  
+  function enableButtons(enable) {
+    pumpBtn.disabled = !enable;
+    dumpBtn.disabled = !enable;
+  }
+  
+  pumpBtn.addEventListener('click', () => {
+    enableButtons(false);
+    resultText.textContent = '';
+    createChart();
+    animateChart(true);
+  });
+  
+  dumpBtn.addEventListener('click', () => {
+    enableButtons(false);
+    resultText.textContent = '';
+    createChart();
+    animateChart(false);
+  });
 
-        function showMainMenu() {
-            document.querySelectorAll('.game-screen').forEach(el => {
-                el.style.display = 'none';
-            });
-            document.getElementById('mainMenu').style.display = 'block';
-        }
+  // Initialize empty chart
+  createChart();
+</script>
 
-        const symbols = ['🐶', '🐸', '🍌', '💩', '🚀', '👑'];
-        function spinSlots() {
-            const spinBtn = document.getElementById('spin-btn');
-            spinBtn.disabled = true;
-            spinBtn.textContent = 'SPINNING...';
-            
-            const reels = [
-                document.getElementById('reel1'),
-                document.getElementById('reel2'),
-                document.getElementById('reel3')
-            ];
-            
-            let spins = 0;
-            const totalSpins = 20;
-            const spinInterval = setInterval(() => {
-                reels.forEach(reel => {
-                    reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                });
-                
-                spins++;
-                if (spins >= totalSpins) {
-                    clearInterval(spinInterval);
-                    checkSlotResult(reels);
-                    spinBtn.disabled = false;
-                    spinBtn.textContent = 'SPIN (0.01 SOL)';
-                }
-            }, 100);
-        }
-        
-        function checkSlotResult(reels) {
-            const resultText = document.getElementById('slotsResult');
-            const values = reels.map(reel => reel.textContent);
-            
-            if (values[0] === values[1] && values[1] === values[2]) {
-                resultText.textContent = 'JACKPOT! YOU WON 0.1 SOL!';
-                resultText.style.color = 'lime';
-            } else if (values[0] === values[1] || values[1] === values[2]) {
-                resultText.textContent = 'Small win! You got 0.02 SOL back';
-                resultText.style.color = 'yellow';
-            } else {
-                resultText.textContent = 'You lost! Try again degen!';
-                resultText.style.color = 'red';
-            }
-        }
-
-        function playRoulette() {
-            const result = Math.floor(Math.random() * 6) + 1;
-            const resultText = document.getElementById('rouletteResult');
-            
-            if (result === 1) {
-                resultText.textContent = '💥 YOU GOT RUGGED! 💥\nAll your SOL is gone!';
-                resultText.style.color = 'red';
-            } else {
-                resultText.textContent = 'Safe... this time.\nYou won 0.01 SOL!';
-                resultText.style.color = 'lime';
-            }
-        }
-
-        function buyTicket() {
-            const resultText = document.getElementById('lotteryResult');
-            const win = Math.random() < 0.1;
-            
-            if (win) {
-                const prize = (Math.random() * 1).toFixed(2);
-                resultText.textContent = `🎉 YOU WON ${prize} SOL! 🎉`;
-                resultText.style.color = 'lime';
-            } else {
-                resultText.textContent = 'Better luck next time ape!\n(You lost)';
-                resultText.style.color = 'red';
-            }
-        }
-    </script>
 </body>
 </html>
