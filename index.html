@@ -5,104 +5,427 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moon or Goon</title>
   <style>
+    :root {
+      --primary: #facc15;
+      --bg-dark: #0f172a;
+      --bg-light: rgba(255, 255, 255, 0.05);
+      --win: #4ade80;
+      --lose: #f87171;
+    }
+    
     body {
       margin: 0;
-      font-family: sans-serif;
-      background: linear-gradient(to bottom, #0f172a, #000);
-      color: #facc15;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, var(--bg-dark), #000);
+      color: var(--primary);
       text-align: center;
-      padding: 30px;
-    }
-    .game-container {
-      max-width: 600px;
-      margin: auto;
       padding: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
-      border: 2px solid #facc15;
+      min-height: 100vh;
     }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      margin: 20px 0;
+      font-size: 2.5rem;
+      text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+    }
+    
+    .game-container {
+      padding: 25px;
+      background: var(--bg-light);
+      border-radius: 15px;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.2);
+      margin-bottom: 20px;
+    }
+    
     button {
-      background: #facc15;
+      background: var(--primary);
       color: #000;
       border: none;
-      padding: 12px 20px;
+      padding: 12px 24px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
       margin: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
     }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(250, 204, 21, 0.4);
+    }
+    
+    button:disabled {
+      background: #64748b;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .wallet-info {
+      background: var(--bg-light);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border: 1px solid #334155;
+    }
+    
+    .bet-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .bet-amount {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    input[type="number"] {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100px;
+      text-align: center;
+    }
+    
     .result {
-      font-size: 1.5rem;
-      margin-top: 20px;
+      font-size: 1.8rem;
+      margin: 25px 0;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .history {
+      margin-top: 30px;
+    }
+    
+    .history-list {
+      list-style: none;
+      padding: 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .history-item {
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .win {
+      color: var(--win);
+    }
+    
+    .lose {
+      color: var(--lose);
+    }
+    
+    .token-selector {
+      padding: 10px;
+      border-radius: 5px;
+      background: #1e293b;
+      color: white;
+      border: 1px solid #334155;
+      margin: 10px 0;
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .game-container {
+        padding: 15px;
+      }
+    }
+    
+    /* Animation */
+    @keyframes moon {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+    
+    @keyframes goon {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(20px); }
+      100% { transform: translateY(0); }
+    }
+    
+    .moon-animation {
+      animation: moon 1s ease;
+    }
+    
+    .goon-animation {
+      animation: goon 1s ease;
     }
   </style>
 </head>
 <body>
-
-  <h1>🚀 Moon or Goon ☠️</h1>
-  <p>A degenerate game of fate. Connect your wallet, choose your token, and see if it moons or goons!</p>
-
-  <button id="connectWalletBtn">Connect Phantom Wallet</button>
-  <p id="walletAddress"></p>
-  <p id="balance"></p>
-
-  <div class="game-container">
-    <h2>Choose a Token</h2>
-    <select id="tokenSelect">
-      <option value="BONK">BONK</option>
-      <option value="WIF">WIF</option>
-      <option value="MYRO">MYRO</option>
-      <option value="JUP">JUP</option>
-    </select>
-    <br/>
-    <button onclick="playGame()">Play: Moon or Goon</button>
-    <div class="result" id="gameResult"></div>
+  <div class="container">
+    <h1>🚀 Moon or Goon ☠️</h1>
+    <p>A degenerate game of fate. Connect your wallet, place your bet, and see if your token moons or goons!</p>
+    
+    <div class="wallet-info">
+      <button id="connectWalletBtn">Connect Phantom Wallet</button>
+      <div id="walletDetails" style="display: none;">
+        <p>Wallet: <span id="walletAddress"></span></p>
+        <p>Balance: <span id="balance"></span> SOL</p>
+      </div>
+    </div>
+    
+    <div class="game-container">
+      <h2>Place Your Bet</h2>
+      
+      <div class="bet-controls">
+        <select id="tokenSelect" class="token-selector">
+          <option value="BONK">BONK</option>
+          <option value="WIF">WIF</option>
+          <option value="MYRO">MYRO</option>
+          <option value="JUP">JUP</option>
+          <option value="SOL">SOL</option>
+        </select>
+        
+        <div class="bet-amount">
+          <input type="number" id="betAmount" min="0.1" step="0.1" value="0.1">
+          <span>SOL</span>
+        </div>
+        
+        <button id="playButton" disabled>Play: Moon or Goon</button>
+      </div>
+      
+      <div class="result" id="gameResult"></div>
+      
+      <div class="history">
+        <h3>Your Game History</h3>
+        <ul class="history-list" id="historyList"></ul>
+      </div>
+    </div>
   </div>
 
   <script>
+    // Game configuration
+    const HOUSE_ADDRESS = 'YOUR_HOUSE_WALLET_ADDRESS_HERE'; // Replace with your house wallet
+    const WIN_MULTIPLIER = 1.9; // 1.9x payout (5% house edge)
+    const GAME_HISTORY_KEY = 'moonOrGoonHistory';
+    
+    // Game state
     let provider = null;
-
+    let publicKey = null;
+    let connection = null;
+    let gameHistory = JSON.parse(localStorage.getItem(GAME_HISTORY_KEY)) || [];
+    
+    // DOM elements
+    const connectWalletBtn = document.getElementById('connectWalletBtn');
+    const walletDetails = document.getElementById('walletDetails');
+    const walletAddressEl = document.getElementById('walletAddress');
+    const balanceEl = document.getElementById('balance');
+    const playButton = document.getElementById('playButton');
+    const gameResultEl = document.getElementById('gameResult');
+    const tokenSelect = document.getElementById('tokenSelect');
+    const betAmountInput = document.getElementById('betAmount');
+    const historyList = document.getElementById('historyList');
+    
+    // Initialize
     window.addEventListener('load', async () => {
+      // Load Solana Web3 if not already loaded
+      if (!window.solanaWeb3) {
+        await loadScript('https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js');
+        window.solanaWeb3 = solanaWeb3;
+      }
+      
+      // Check for Phantom Wallet
       if ("solana" in window) {
         provider = window.solana;
         if (provider.isPhantom) {
           console.log("Phantom wallet found!");
+          
+          // Check if already connected
+          try {
+            const response = await provider.connect({ onlyIfTrusted: true });
+            handleWalletConnect(response);
+          } catch (e) {
+            console.log("Not connected automatically");
+          }
         }
       } else {
         alert("Phantom Wallet not found. Please install it from https://phantom.app/");
       }
+      
+      // Render game history
+      renderHistory();
     });
-
-    document.getElementById("connectWalletBtn").addEventListener("click", async () => {
+    
+    // Wallet connection
+    connectWalletBtn.addEventListener("click", async () => {
       try {
         const resp = await provider.connect();
-        document.getElementById("walletAddress").innerText = `Wallet: ${resp.publicKey.toString()}`;
-
-        // Get balance
-        const connection = new window.solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
-        const balance = await connection.getBalance(resp.publicKey);
-        document.getElementById("balance").innerText = `Balance: ${(balance / 1e9).toFixed(3)} SOL`;
+        handleWalletConnect(resp);
       } catch (err) {
         console.error("Wallet connection error:", err);
+        alert("Failed to connect wallet: " + err.message);
       }
     });
-
-    function playGame() {
-      const result = Math.random();
-      const selectedToken = document.getElementById("tokenSelect").value;
-      const message =
-        result < 0.5
-          ? `☠️ ${selectedToken} went GOON. You lost your SOL!`
-          : `🚀 ${selectedToken} MOONED! You doubled your SOL!`;
-
-      const resultEl = document.getElementById("gameResult");
-      resultEl.innerText = message;
-      resultEl.style.color = result < 0.5 ? "red" : "lime";
+    
+    // Handle wallet connection
+    function handleWalletConnect(response) {
+      publicKey = response.publicKey;
+      walletAddressEl.textContent = `${publicKey.toString().slice(0, 4)}...${publicKey.toString().slice(-4)}`;
+      walletDetails.style.display = 'block';
+      connectWalletBtn.textContent = 'Connected';
+      connectWalletBtn.disabled = true;
+      
+      // Initialize connection
+      connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+      
+      // Enable play button
+      playButton.disabled = false;
+      
+      // Get balance
+      updateBalance();
+    }
+    
+    // Update wallet balance
+    async function updateBalance() {
+      if (!publicKey) return;
+      
+      try {
+        const balance = await connection.getBalance(publicKey);
+        balanceEl.textContent = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(3);
+      } catch (err) {
+        console.error("Balance check error:", err);
+      }
+    }
+    
+    // Play game
+    playButton.addEventListener('click', async () => {
+      if (!publicKey) {
+        alert("Please connect your wallet first");
+        return;
+      }
+      
+      const betAmount = parseFloat(betAmountInput.value);
+      if (isNaN(betAmount) {
+        alert("Please enter a valid bet amount");
+        return;
+      }
+      
+      const selectedToken = tokenSelect.value;
+      playButton.disabled = true;
+      gameResultEl.textContent = "Processing your bet...";
+      
+      try {
+        // In a real app, you would send the SOL to your house wallet
+        // Here we simulate it with a timeout
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Simulate the game outcome (50/50 chance)
+        const result = Math.random();
+        const isWin = result < 0.5; // 50% win chance
+        
+        // Calculate payout
+        const payout = isWin ? betAmount * WIN_MULTIPLIER : 0;
+        
+        // Display result
+        displayResult(selectedToken, isWin, betAmount, payout);
+        
+        // Add to history
+        addToHistory(selectedToken, isWin, betAmount, payout);
+        
+        // Update balance (simulated)
+        if (isWin) {
+          balanceEl.textContent = (parseFloat(balanceEl.textContent) + payout).toFixed(3);
+        } else {
+          balanceEl.textContent = (parseFloat(balanceEl.textContent) - betAmount).toFixed(3);
+        }
+        
+      } catch (err) {
+        console.error("Game error:", err);
+        gameResultEl.textContent = "Error processing your bet";
+        gameResultEl.className = 'result';
+      } finally {
+        playButton.disabled = false;
+      }
+    });
+    
+    // Display game result
+    function displayResult(token, isWin, betAmount, payout) {
+      gameResultEl.className = 'result';
+      void gameResultEl.offsetWidth; // Trigger reflow for animation
+      
+      if (isWin) {
+        gameResultEl.textContent = `🚀 ${token} MOONED! You won ${payout.toFixed(2)} SOL!`;
+        gameResultEl.classList.add('win', 'moon-animation');
+      } else {
+        gameResultEl.textContent = `☠️ ${token} GOONED! You lost ${betAmount.toFixed(2)} SOL`;
+        gameResultEl.classList.add('lose', 'goon-animation');
+      }
+    }
+    
+    // Add game to history
+    function addToHistory(token, isWin, betAmount, payout) {
+      const game = {
+        token,
+        isWin,
+        betAmount,
+        payout,
+        timestamp: new Date().toLocaleString()
+      };
+      
+      gameHistory.unshift(game);
+      if (gameHistory.length > 10) gameHistory.pop();
+      
+      localStorage.setItem(GAME_HISTORY_KEY, JSON.stringify(gameHistory));
+      renderHistory();
+    }
+    
+    // Render game history
+    function renderHistory() {
+      historyList.innerHTML = '';
+      
+      gameHistory.forEach(game => {
+        const li = document.createElement('li');
+        li.className = `history-item ${game.isWin ? 'win' : 'lose'}`;
+        
+        li.innerHTML = `
+          <strong>${game.token}</strong> - 
+          ${game.isWin ? 'Won' : 'Lost'} ${game.isWin ? game.payout.toFixed(2) : game.betAmount.toFixed(2)} SOL
+          <div class="timestamp">${game.timestamp}</div>
+        `;
+        
+        historyList.appendChild(li);
+      });
+    }
+    
+    // Helper function to load scripts
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
     }
   </script>
-
-  <!-- Add Solana Web3 for balance fetching -->
-  <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
-
 </body>
 </html>
